@@ -55,7 +55,7 @@ contract ICO {
         require(icoPhase == Phase.Open, "not open");
         uint tokenWithdrawalAmount = investments[msg.sender] * ratio;
         investments[msg.sender] = 0;
-        spaceCoin.transfer(msg.sender, tokenWithdrawalAmount);
+        spaceCoin._transfer(msg.sender, tokenWithdrawalAmount);
     }
 
     // @notice Allows owner to pause buying/redeeming operations
