@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 import './Project.sol';
 
 contract ProjectFactory {
-    event ProjectCreated(address creator, address newProject); // Note: you should add additional data fields in this event
+    event ProjectCreated(address creator, address newProject);
     Project[] public allProjects;
 
     function create(address _creator, string memory _name, string memory _symbol, uint256 _goal) external {
