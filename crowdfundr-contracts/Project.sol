@@ -32,7 +32,7 @@ contract Project is ERC721 {
         bytes memory _data = "";
         require(checkOnERC721Received(address(this), msg.sender, tokenId, _data), "ERC721: transfer to non ERC721Receiver implementer");
         require(projectStatus != Status.Success, "project goal met");
-        require(!hasFailed() && projectStatus != Status.Failure, "project failed");
+        require(!checkAndSetFailureStatus() && projectStatus != Status.Failure, "project failed");
         balance += msg.value;
         contributions[msg.sender] += msg.value;
         if (balance >= goal) {
@@ -53,7 +53,7 @@ contract Project is ERC721 {
 
     function refund() public {
         require(contributions[msg.sender] > 0, "non-contributor");
-        require(hasFailed() && projectStatus == Status.Failure, "project hasn't failed");
+        require(checkAndSetFailureStatus() && projectStatus == Status.Failure, "project hasn't failed");
         uint refundAmount = contributions[msg.sender];
         contributions[msg.sender] = 0;
         (bool success, ) = payable(msg.sender).call{value: refundAmount}("");
@@ -63,7 +63,7 @@ contract Project is ERC721 {
 
     function cancel() public {
         require(msg.sender == creator, "only creator");
-        require(!hasFailed() && projectStatus != Status.Failure, "project failed");
+        require(!checkAndSetFailureStatus() && projectStatus != Status.Failure, "project failed");
         require(projectStatus != Status.Success, "project goal met");
         projectStatus = Status.Failure;
         emit ProjectCancelled(creator, address(this));
@@ -81,7 +81,7 @@ contract Project is ERC721 {
         }
     }
 
-    function hasFailed() private returns(bool) {
+    function checkAndSetFailureStatus() private returns(bool) {
         if (block.timestamp - startDate >= 30 days) {
             if (projectStatus == Status.Active) {
                 projectStatus = Status.Failure;
