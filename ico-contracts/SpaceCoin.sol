@@ -24,12 +24,12 @@ contract SpaceCoin is ERC20 {
     }
 
     // @notice Transfers the amount of tokens to a particular address
-    function transfer(address to, uint256 amount) public override returns (bool) {
+    function _transfer(address to, uint256 amount) public override returns (bool) {
         if (taxEnabled) {
-            super.transfer(treasuryAccount, amount * 2 / 100);
-            super.transfer(to, amount - (amount * 2 / 100));
+            super._transfer(treasuryAccount, amount * 2 / 100);
+            super._transfer(to, amount - (amount * 2 / 100));
         } else {
-            super.transfer(to, amount);
+            super._transfer(to, amount);
         }
         return true;
     }
