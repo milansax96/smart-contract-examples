@@ -27,8 +27,6 @@ contract Project is ERC721 {
         startDate = block.timestamp;
     }
 
-    receive() external payable {}
-
     function contribute() external payable {
         require(msg.value >= 0.01 ether, "must contribute at least 0.01 ETH");
         bytes memory _data = "";
@@ -81,10 +79,6 @@ contract Project is ERC721 {
             _safeMint(msg.sender, tokenId++);
             nftBalance -= 1 ether;
         }
-    }
-
-    function transfer(address to, uint256 badgeId) public {
-        safeTransferFrom(msg.sender, to, badgeId);
     }
 
     function hasFailed() private returns(bool) {
